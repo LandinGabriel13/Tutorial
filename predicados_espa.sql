@@ -71,7 +71,8 @@ WHERE colonias.id = 3183;
 
 
 ----------- WITHIN (A,B) --------
--- Este predicado es el contrario de Contains, es decir, devolvera verdadero si la geometría A esta completamente dentro de la geometría B. 
+-- Este predicado es el contrario de Contains, es decir, devolvera verdadero si la geometría A esta completamente dentro de
+-- la geometría B. 
 -- Ejemplo: ¿Qué estaciones del metros estan dentro de la colonia Centro? 
 -- Nota: Whithin se entiende como "contenido en", en este caso son las estaciones del metro contenidas en la colonia Centro.
 
@@ -97,8 +98,9 @@ AND colonias.id = 3183;
 
 
 ----------- COVEREDBY -----------
--- ¿Cuántas manzanas de la Ciudad de México tienen menos de 1000 habitantes?, en este caso seleccionara aquellas manzanas que tienen menos de 1000 habitantes
--- que esten dentro de la ciudad de México (tabla ent_cdmx), en este caso CoveredBy es el inverso de Covers, manzanas_zmvm contenidas en ent_cdmx.
+-- ¿Cuántas manzanas de la Ciudad de México tienen menos de 1000 habitantes?, en este caso seleccionara aquellas manzanas que tienen menos de 
+-- 1000 habitantes que esten dentro de la ciudad de México (tabla ent_cdmx), en este caso CoveredBy es el inverso de Covers, manzanas_zmvm 
+-- contenidas en ent_cdmx.
 
 SELECT count(manzanas_zmvm.*)
 FROM manzanas_zmvm 
@@ -108,8 +110,8 @@ WHERE manzanas_zmvm.pob1 < 1000;
 
 
 -- ¿Cuál es el total de población que vive en las manzanas que cruza cruza la avenida de los Insurgentes? ------ 
--- Para esta consulta se realiza una suma de las manzanas que intersectan la Av. Insurgentes (Sur, Centro y Norte), se hace uso de la función coalesce para
--- considerar valores nulos en caso de que existieran como 0.
+-- Para esta consulta se realiza una suma de las manzanas que intersectan la Av. Insurgentes (Sur, Centro y Norte), se hace uso de la 
+-- función coalesce para considerar valores nulos en caso de que existieran como 0.
 
 SELECT sum(coalesce(manzanas_zmvm.pob1)) AS Pob_Insurgentes
 FROM manzanas_zmvm 
@@ -120,8 +122,8 @@ OR calles_cdmx_zmvm.osm_name = 'Avenida Insurgentes Centro'
 OR calles_cdmx_zmvm.osm_name = 'Avenida Insurgentes Norte'; 
 
 -- ¿Cuál es el ageb de la Ciudad de México con mayor número de papelerías? -------
--- En esta consulta se realiza una selección de los agebs que intersectan con el mayor número de papelerías, mediante un conteo se presentan en una tabla que 
--- agrupa por el id de agebs en un orden descendente.
+-- En esta consulta se realiza una selección de los agebs que intersectan con el mayor número de papelerías, mediante un conteo se presentan 
+-- en una tabla que agrupa por el id de agebs en un orden descendente.
 
 SELECT merge_agebs_zmvm.id AS id_ageb, count(denue_cdmx.codigo_act = '465311') AS Tot_papelerias
 FROM merge_agebs_zmvm
