@@ -2,8 +2,10 @@
 --------------------------------------------------- DATOS -----------------------------------------------------
 --- AGEBS de la ZMVM, COLONIAS de la ZMVM, MANZANAS de la ZMVM, LIMITE de la ZMVM, ESTACIONES del METRO, DENUE de la CDMX, CALLES de la ZMVM ---
 
------- INTERSECTS----
------ ¿Cuáles son las agebs que intersectan con la colonia Centro de la Ciudad de México? el identificador de esta colonia es 3183) ------
+---------- INTERSECTS (A,B)-------
+----- Devuelve verdadero si el objeto geométrico (A) intersecta espacialmente con el segundo (B).
+----- Ejemplo: ¿Cuáles son las agebs que intersectan con la colonia Centro de la Ciudad de México? 
+----- Nota: el identificador de la colonia Centro es 3183 ------
 
 SELECT agebs_cdmx.*
 FROM agebs_cdmx 
@@ -11,10 +13,11 @@ JOIN colonias
 ON ST_Intersects(agebs_cdmx.geom, colonias .geom)
 WHERE colonias.id = 3183;
 
------ OVERLAPS ------------
---- ¿Cuántos agebs se sobreponen con las colonias de la Ciudad de México? 
----- Estás geometrías comparten parte de sus puntos pero no todos, además, la intersección debe tener la misma dimensión que las geometrías análizadas, 
----- una superficie (bidimensional) para este caso.  
+----- OVERLAPS (A,B)------------
+---- Las geometrías en este predicado solamente comparten parte de sus puntos, es decir, no debe existir un sobreposición total de ambas geometrías. 
+---- La sobreposición debe tener la misma dimensión que las geometrías analizadas (Surface-Surface, LineString-LineString...). 
+---- Para el siguiente ejemplo la geometría es de Surface-Surface, con una dimensión de 2.
+---- ¿Cuántos agebs se sobreponen con las colonias de la Ciudad de México? 
 
 SELECT count(a.*)
 FROM agebs_cdmx a
@@ -22,19 +25,28 @@ JOIN colonias c
 ON ST_Overlaps (a.geom, c.geom);
 
 
--------- CONTAINS----------------
-
----- Se quiere saber sí el total de puntos estan contenidos dentro de una geometría, se utiliza el metodo Contains,
----- En este caso preguntamos, ¿Todas las estaciones del metro están contenidas dentro de la Zona Metropolitana del Valle de Méxco?, con el  resultadoa 
+-------- CONTAINS (A,B)----------------
+---- El predicado Contains devuelve las geometrías (B) contenidas completamente en el interior de la segunda geometría (A). 
+---- Para el siguiente ejemplo queremos saber si: ¿Todas las estaciones del metro están contenidas dentro de la Zona Metropolitana del Valle de Méxco?, con el  resultadoa 
 ---- se obteniene el total.
------ Total = 192 estaciones ----
+----- Resultado: 192 estaciones ----
 
 SELECT count(estaciones_metro.id)
 FROM estaciones_metro, limite_metropolitano
 WHERE ST_Contains(limite_metropolitano.geom, estaciones_metro.geom);
 
--------¿Qué agebs estan dentro de la Colonia Centro?, Contains no considera los puntos que estén sobre el borde, es decir,
-------- solo mostrará aquellos que estén dentro sin considerar los que intersectan con el borde.
+---- Otro ejemplo un poco más interesante es saber, ¿cuántas de todas las estaciones se localizan dentros de la Ciudad de México?
+
+SELECT count(estaciones_metro)
+FROM estaciones_metro
+JOIN ent_cdmx
+ON ST_Contains(ent_cdmx.geom, estaciones_metro.geom);
+
+---- Resultado: 181 estaciones ----
+
+---- Otros ejemplos para considerar usar Contains o Intersects se muestra a continuación:
+---- ¿Cuántos estan dentro de la Colonia Centro?, Nota: Contains no considera los puntos que estén sobre el borde, es decir,
+---- solo mostrará aquellos que estén completamente dentro de la geometría.
 
 SELECT agebs_cdmx.*
 FROM agebs_cdmx 
@@ -42,10 +54,23 @@ JOIN colonias
 ON  ST_Contains(colonias.geom, agebs_cdmx.geom)
 WHERE colonias.id = 3183;
 
+----- Resultado: 8 agebs -----
 
--------- WITHIN --------
----- ¿Qué estaciones del metros estan dentro de la colonia Centro? Whithin se entiende como "contenido en", en este
----- caso son las estaciones del metro contenidas en la colonia  Centro.
+---- Ahora, hagamos la consulta con Intersects y observemos la diferencia.
+
+SELECT agebs_cdmx.*
+FROM agebs_cdmx 
+JOIN colonias 
+ON  ST_Intersects(colonias.geom, agebs_cdmx.geom)
+WHERE colonias.id = 3183;
+
+----- Resultado: 36 agebs ----
+
+
+-------- WITHIN (A,B) --------
+---- Este predicado es el contrario de Contains, es decir, devolvera verdadero si la geometría A esta completamente dentro de la geometría B) 
+---- Ejemplo: ¿Qué estaciones del metros estan dentro de la colonia Centro? 
+---- Nota: Whithin se entiende como "contenido en", en este caso son las estaciones del metro contenidas en la colonia  Centro.
 
 SELECT estaciones_metro.nombreesta
 FROM estaciones_metro 
@@ -53,10 +78,12 @@ JOIN colonias
 ON ST_Within(estaciones_metro.geom, colonias.geom)
 WHERE colonias.id = 3183;
 
+---- Resultado: 14 estaciones se localizan dentro de la colonia Centro ----
 
 -----------COVERS--------------
----- Selecciona del Denue las papelerias ("comercio al por menor de ariculos de papelería", el codigo de esta actividad es '465311' en el campo "codigo_act") 
----- que se localizan dentro de la colonía Centro, covers considera los puntos que si están contenidos en el borde.  
+---- Selecciona del Denue las papelerias que se localizan dentro de la colonía Centro, covers considera los puntos que si están contenidos en el borde.
+---- La descripción de este tipo de actividad es la siguiente "comercio al por menor de ariculos de papelería", con el codigoes '465311' 
+---- en el campo "codigo_act".  
 
 SELECT denue_cdmx.*
 FROM denue_cdmx  
