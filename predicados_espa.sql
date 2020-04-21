@@ -85,9 +85,9 @@ WHERE colonias.id = 3183;
 -- Resultado: 14 estaciones se localizan dentro de la colonia Centro ----
 
 -----------COVERS--------------
--- Selecciona del Denue las papelerias que se localizan dentro de la colonía Centro. Nota: Covers si considera los puntos contenidos en el borde.
--- La descripción para papelerías en el Denue es: "comercio al por menor de ariculos de papelería", haremos la selección de éstas mediante 
--- su código de actividad que corresponde a '465311' en el campo "codigo_act".  
+-- Selecciona del Denue las papelerias que se localizan dentro de la colonía Centro. Nota: Covers si considera los puntos 
+-- contenidos en el borde. La descripción para papelerías en el Denue es: "comercio al por menor de ariculos de papelería",
+-- haremos la selección de éstas mediante  su código de actividad que corresponde a '465311' en el campo "codigo_act".  
 
 SELECT denue_cdmx.*
 FROM denue_cdmx  
@@ -98,9 +98,9 @@ AND colonias.id = 3183;
 
 
 ----------- COVEREDBY -----------
--- ¿Cuántas manzanas de la Ciudad de México tienen menos de 1000 habitantes?, en este caso seleccionara aquellas manzanas que tienen menos de 
--- 1000 habitantes que esten dentro de la ciudad de México (tabla ent_cdmx), en este caso CoveredBy es el inverso de Covers, manzanas_zmvm 
--- contenidas en ent_cdmx.
+-- ¿Cuántas manzanas de la Ciudad de México tienen menos de 1000 habitantes?, en este caso seleccionara aquellas manzanas 
+-- que tienen menos de 1000 habitantes que esten dentro de la ciudad de México (tabla ent_cdmx), en este caso CoveredBy 
+-- es el inverso de Covers, manzanas_zmvm contenidas en ent_cdmx.
 
 SELECT count(manzanas_zmvm.*)
 FROM manzanas_zmvm 
@@ -110,8 +110,8 @@ WHERE manzanas_zmvm.pob1 < 1000;
 
 
 -- ¿Cuál es el total de población que vive en las manzanas que cruza cruza la avenida de los Insurgentes? ------ 
--- Para esta consulta se realiza una suma de las manzanas que intersectan la Av. Insurgentes (Sur, Centro y Norte), se hace uso de la 
--- función coalesce para considerar valores nulos en caso de que existieran como 0.
+-- Para esta consulta se realiza una suma de las manzanas que intersectan la Av. Insurgentes (Sur, Centro y Norte), 
+-- se hace uso de la  función coalesce para considerar valores nulos en caso de que existieran como 0.
 
 SELECT sum(coalesce(manzanas_zmvm.pob1)) AS Pob_Insurgentes
 FROM manzanas_zmvm 
@@ -122,8 +122,8 @@ OR calles_cdmx_zmvm.osm_name = 'Avenida Insurgentes Centro'
 OR calles_cdmx_zmvm.osm_name = 'Avenida Insurgentes Norte'; 
 
 -- ¿Cuál es el ageb de la Ciudad de México con mayor número de papelerías? -------
--- En esta consulta se realiza una selección de los agebs que intersectan con el mayor número de papelerías, mediante un conteo se presentan 
--- en una tabla que agrupa por el id de agebs en un orden descendente.
+-- En esta consulta se realiza una selección de los agebs que intersectan con el mayor número de papelerías, mediante un 
+-- conteo se presentan en una tabla que agrupa por el id de agebs en un orden descendente.
 
 SELECT merge_agebs_zmvm.id AS id_ageb, count(denue_cdmx.codigo_act = '465311') AS Tot_papelerias
 FROM merge_agebs_zmvm
