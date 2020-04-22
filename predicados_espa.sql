@@ -22,8 +22,8 @@ WHERE colonias.id = 3183;
 -- ¿Cuántos agebs se sobreponen con las colonias de la Ciudad de México? 
 
 SELECT count(a.*)
-FROM agebs_cdmx a
-JOIN colonias c
+FROM agebs_cdmx AS a
+JOIN colonias AS c
 ON ST_Overlaps (a.geom, c.geom);
 
 
