@@ -87,9 +87,9 @@ WHERE colonias.id = 3183;
 -----------COVERS (A,B)--------------
 -- Devuelve las geometrías de B contenidas en A, no considera ningún punto de B en el exterior de A. Covers si considera los puntos 
 -- contenidos en el borde de A.
--- Para ejemplificar este predicado vamos a seleccionar del Denue las papelerias que se localizan dentro de la colonía Centro. La descripción
--- general para papelerías en el Denue es: "comercio al por menor de ariculos de papelería". Realizaremos esta selección mediante su código 
--- de actividad el cual corresponde a '465311' en el campo "codigo_act".  
+-- Para ejemplificar este predicado vamos a seleccionar del Denue las papelerias que se localizan dentro de la colonía Centro. 
+-- La descripción general para papelerías en el Denue es: "comercio al por menor de ariculos de papelería". Realizaremos esta 
+-- selección mediante su código de actividad el cual corresponde a '465311' en el campo "codigo_act".  
 
 SELECT denue_cdmx.*
 FROM denue_cdmx  
