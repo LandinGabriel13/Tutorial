@@ -11,7 +11,7 @@
 SELECT agebs_cdmx.*
 FROM agebs_cdmx 
 JOIN colonias 
-ON ST_Intersects(agebs_cdmx.geom, colonias .geom)
+ON ST_Intersects(agebs_cdmx.geom, colonias.geom)
 WHERE colonias.id = 3183;
 
 ---------- OVERLAPS (A,B)---------
